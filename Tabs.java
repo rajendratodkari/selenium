@@ -1,4 +1,3 @@
-
 package automationFramework;
 
 import java.awt.AWTException;
@@ -32,7 +31,7 @@ public class Tabs {
 	 */
 	public static void main(String[] args) throws AWTException {
 		Tabs tabs = new Tabs();
-    	System.setProperty("webdriver.gecko.driver","/home/rajendra/installation/selenium/geckodriver");
+    	System.setProperty("webdriver.gecko.driver","//home/rajendra/installation/chromedriver");
     	driver = new FirefoxDriver();
     	
     	 //First tab - agile
@@ -40,6 +39,7 @@ public class Tabs {
     	String emailUrl = 	"https://www.google.com/gmail/";
     	
         driver.get(baseUrl);
+        
         
         String agileTab	=	driver.getWindowHandle();
         System.out.println("agileTab = "+agileTab.toString()+", "+driver.getTitle());
@@ -50,21 +50,39 @@ public class Tabs {
         
         tabs.switchWindow();
         
-        tabs.waitForGmailLoad("id", "Email");
-        
         String gmailTab	=	driver.getWindowHandle();
         System.out.println("gmailTab = "+gmailTab.toString()+", "+driver.getCurrentUrl());
         
-        driver.findElement(By.id("Email")).sendKeys("sneha.suh@gmail.com");
-        driver.findElement(By.name("signIn")).click();
+        boolean isNewUI = driver.findElements(By.id("identifierId")).size() > 0;
+        boolean isOldUI = driver.findElements(By.id("Email")).size() > 0;
         
-        tabs.waitForGmailLoad("name", "Passwd");
+        if (isOldUI) {
+        	tabs.waitForGmailLoad("id", "Email");
+        	
+	        driver.findElement(By.id("Email")).sendKeys("sneha.suh@gmail.com");
+	        driver.findElement(By.name("signIn")).click();
+	        
+	        tabs.waitForGmailLoad("name", "Passwd");
+	       
+	        driver.findElement(By.name("Passwd")).sendKeys("snehraj@2011");
+	        //signIn button click will not work
+	        driver.findElement(By.name("Passwd")).submit(); 
+        }
+        if (isNewUI) {
+        	tabs.waitForGmailLoad("id", "identifierId");
         
-        driver.findElement(By.name("Passwd")).sendKeys("snehalgane");
-        //signIn button click will not work
-        driver.findElement(By.name("Passwd")).submit(); 
-         
+        	System.out.println("New UI");
+        	driver.findElement(By.id("identifierId")).sendKeys("sneha.suh@gmail.com");
+        	driver.findElement(By.id("identifierNext")).click();
+        	
+        	tabs.waitForGmailLoad("name", "password");
+        	driver.findElement(By.name("password")).sendKeys("snehraj@2011");
+        	
+        	driver.findElement(By.id("passwordNext")).click();
+        	
+        }
 	}
+	
 	
 
 	public void trigger(String script, WebElement element) {
