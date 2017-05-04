@@ -28,18 +28,35 @@ public class Tabs {
 	/**
 	 * @param args
 	 * @throws AWTException 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws AWTException {
+	public static void main(String[] args) throws AWTException, InterruptedException {
 		Tabs tabs = new Tabs();
     	System.setProperty("webdriver.gecko.driver","//home/rajendra/installation/chromedriver");
     	driver = new FirefoxDriver();
     	
     	 //First tab - agile
-    	String baseUrl	=	"http://www.agilecloud.biz";
+    	String baseUrl	=	"http://14.192.17.25";
     	String emailUrl = 	"https://www.google.com/gmail/";
     	
         driver.get(baseUrl);
+        driver.manage().window().maximize();
+        driver.findElement(By.linkText("SIGN UP")).click();
+        driver.findElement(By.id("ContentPlaceHolder1_fname")).sendKeys("snehal");
+        driver.findElement(By.id("ContentPlaceHolder1_eMail")).sendKeys("125snehal.svh@gmail.com");
         
+        WebElement email = driver.findElement(By.id("ContentPlaceHolder1_eMail"));
+        email.sendKeys(Keys.TAB);
+        
+        WebElement captchaTxtBox = driver.findElement(By.id("txtInput"));
+        WebElement generateOTPBtn = driver.findElement(By.id("ContentPlaceHolder1_genotp"));
+        
+        ((JavascriptExecutor) driver).executeScript("arguments[0].removeAttribute('id','ContentPlaceHolder1_genotp')", captchaTxtBox);
+        System.out.println("Captcha Input Box invalidated");
+        ((JavascriptExecutor) driver).executeScript("arguments[0].removeAttribute('disabled','disabled')", generateOTPBtn);
+        System.out.println("Generate OTP Button enabled");
+        generateOTPBtn.click();
+       
         
         String agileTab	=	driver.getWindowHandle();
         System.out.println("agileTab = "+agileTab.toString()+", "+driver.getTitle());
@@ -59,12 +76,12 @@ public class Tabs {
         if (isOldUI) {
         	tabs.waitForGmailLoad("id", "Email");
         	
-	        driver.findElement(By.id("Email")).sendKeys("sneha.suh@gmail.com");
+	        driver.findElement(By.id("Email")).sendKeys("125snehal.svh@gmail.com");
 	        driver.findElement(By.name("signIn")).click();
 	        
 	        tabs.waitForGmailLoad("name", "Passwd");
 	       
-	        driver.findElement(By.name("Passwd")).sendKeys("snehraj@2011");
+	        driver.findElement(By.name("Passwd")).sendKeys("Agile@123");
 	        //signIn button click will not work
 	        driver.findElement(By.name("Passwd")).submit(); 
         }
@@ -72,15 +89,20 @@ public class Tabs {
         	tabs.waitForGmailLoad("id", "identifierId");
         
         	System.out.println("New UI");
-        	driver.findElement(By.id("identifierId")).sendKeys("sneha.suh@gmail.com");
+        	driver.findElement(By.id("identifierId")).sendKeys("125snehal.svh@gmail.com");
         	driver.findElement(By.id("identifierNext")).click();
         	
         	tabs.waitForGmailLoad("name", "password");
-        	driver.findElement(By.name("password")).sendKeys("snehraj@2011");
+        	driver.findElement(By.name("password")).sendKeys("Agile@123");
         	
         	driver.findElement(By.id("passwordNext")).click();
         	
         }
+        
+        driver.findElement(By.className("UI")).click();
+        WebElement mailContent = driver.findElement(By.cssSelector(".m_1420185383581899270para"));
+        System.out.println("mailContent "+ mailContent.toString());
+        
 	}
 	
 	
