@@ -17,7 +17,7 @@ public class SalesOrder {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Sales sales = new Sales();
+		SalesOrder sales = new SalesOrder();
 		System.setProperty("webdriver.chrome.driver", "/home/rajendra/installation/chromedriver/chromedriver");
 		WebDriver driver	=	new ChromeDriver();
 		 driver.manage().window().maximize();
